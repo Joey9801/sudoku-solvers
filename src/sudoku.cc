@@ -89,6 +89,17 @@ bool Board::populate(int values[9][9]){
     return true;
 }
 
+bool Board::populate(std::string boardString){
+
+    int i = 0;
+    int boardArray[9][9];
+    for(char & c: boardString){
+        boardArray[i%9][i/9] = c - '0';
+        i++;
+    }
+    return populate(boardArray);
+}
+
 void Board::printBoard(void){
     
     for(int y=0; y<9; y++){

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 class Element {
 public:
@@ -30,6 +31,7 @@ public:
     Element elements[9][9];
     
     bool populate(int[9][9]);
+    bool populate(std::string);
     void printBoard(void);
 
     bool isSquareConsistent(int, int);

@@ -6,34 +6,56 @@ SimAnneal::SimAnneal(){
 }
 
 bool SimAnneal::solve(Board* board){
-    std::cout << std::endl
-              << "Solving with the Simulated Annealing algorithm" << std::endl;
 
     solveObvious(board);
 
     fillRandom(board);
 
-    std::cout << "Board score = " << score(board) << std::endl;
+    int oldScore, newScore;
+    oldScore = score(board);
+    iteration = 0;
+    scoreHistory.clear();
 
-    int curScore = score(board);
-    for(int i=0; i<1000; i++){
+    while( iteration < 500000 ){
         swapRandom(board);
-        if( score(board) > curScore)
-            undoSwap(board);
+        newScore = score(board);
+        
+        if( newScore == 0 ){
+            oldScore = newScore;
+            scoreHistory.push_back(newScore);
+            break;
+        }
+
+        if( shouldWeAccept(oldScore, newScore, iteration) )
+            oldScore = score(board);
         else
-            curScore = score(board);
-
-        scoreHistory.push_back(curScore);
+            undoSwap(board);
+        
+        iteration++;
+        scoreHistory.push_back(oldScore);
     }
-    std::cout << "Board score = " << score(board) << std::endl;
 
+    finalScore = oldScore;
 
     return true;
 }
 
+float SimAnneal::getTemperature(int iteration){
+    //Defines the cooling schedule
+   return 0.5; 
+}
 
-void  SimAnneal::iterate(Board*){
+bool SimAnneal::shouldWeAccept(int oldScore, int newScore, unsigned int iteration){
+    //Returns true if the swap is to be kept
+    //Definges the acceptance probability function
 
+    if(newScore < oldScore)
+        return true;
+
+    float temperature = getTemperature(iteration);
+    float p = exp( -(newScore - oldScore) / temperature );
+    
+    return rand()/(RAND_MAX+1.0) < p;
 }
 
 void SimAnneal::swapRandom(Board* board){
@@ -68,8 +90,6 @@ void SimAnneal::swapRandom(Board* board){
     temp = board->elements[x1][y].value;
     board->elements[x1][y].value = board->elements[x2][y].value;
     board->elements[x2][y].value = temp;
-
-    //std::cout << "y=" << y << ", x1=" << x1 << ", x2=" << x2 << std::endl;
 
     _lastSwapY  = y;
     _lastSwapX1 = x1;
