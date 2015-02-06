@@ -1,6 +1,6 @@
 #include "base-solver.h"
 
-void BaseSolver::solveObvious(Board* board){
+void BaseSolver::solveObvious(){
     board->setCandidates();
     return;
 }

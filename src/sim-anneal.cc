@@ -5,20 +5,22 @@ SimAnneal::SimAnneal(){
     srand( time(NULL) );
 }
 
-bool SimAnneal::solve(Board* board){
+bool SimAnneal::solve(Board* inBoard){
 
-    solveObvious(board);
+    board = inBoard;
 
-    fillRandom(board);
+    //solveObvious();
+
+    fillRandom();
 
     int oldScore, newScore;
-    oldScore = score(board);
+    oldScore = score();
     iteration = 0;
     scoreHistory.clear();
 
     while( iteration < 500000 ){
-        swapRandom(board);
-        newScore = score(board);
+        swapRandom();
+        newScore = score();
         
         if( newScore == 0 ){
             oldScore = newScore;
@@ -26,10 +28,10 @@ bool SimAnneal::solve(Board* board){
             break;
         }
 
-        if( shouldWeAccept(oldScore, newScore, iteration) )
-            oldScore = score(board);
+        if( shouldWeAccept(oldScore, newScore) )
+            oldScore = score();
         else
-            undoSwap(board);
+            undoSwap();
         
         iteration++;
         scoreHistory.push_back(oldScore);
@@ -40,25 +42,25 @@ bool SimAnneal::solve(Board* board){
     return true;
 }
 
-float SimAnneal::getTemperature(int iteration){
+float SimAnneal::getTemperature(){
     //Defines the cooling schedule
    return 0.5; 
 }
 
-bool SimAnneal::shouldWeAccept(int oldScore, int newScore, unsigned int iteration){
+bool SimAnneal::shouldWeAccept(int oldScore, int newScore){
     //Returns true if the swap is to be kept
     //Definges the acceptance probability function
 
     if(newScore < oldScore)
         return true;
 
-    float temperature = getTemperature(iteration);
+    float temperature = getTemperature();
     float p = exp( -(newScore - oldScore) / temperature );
     
     return rand()/(RAND_MAX+1.0) < p;
 }
 
-void SimAnneal::swapRandom(Board* board){
+void SimAnneal::swapRandom(){
     //Swap two unfixed elements within a row
     //We keep within the row to ensure on of the three constraints is always solved
 
@@ -98,7 +100,7 @@ void SimAnneal::swapRandom(Board* board){
     return;
 }
 
-void SimAnneal::undoSwap(Board* board){
+void SimAnneal::undoSwap(){
     //We only need to swap the values
     //Everything on the row already has the same candidates
     //(Not that we're using those here)
@@ -114,7 +116,7 @@ void SimAnneal::undoSwap(Board* board){
     return;
 }
 
-void SimAnneal::fillRandom(Board* board){
+void SimAnneal::fillRandom(){
     //Fills all the non-fixed elements with a random number
     //Each row is guarenteed to have the numbers 1-9, solving one constraint for free
 
@@ -150,7 +152,7 @@ void SimAnneal::fillRandom(Board* board){
 
 }
 
-int SimAnneal::score(Board* board){
+int SimAnneal::score(){
     //score the board
     //a score of 0 -> board is solved
     //a higher score indicates 'less solved' than a lower

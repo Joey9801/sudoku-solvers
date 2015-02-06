@@ -7,5 +7,5 @@
 class Backtrack : public BaseSolver {
 public:
     bool solve(Board*);
-    void recurse(Board*);
+    void recurse();
 };

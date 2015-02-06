@@ -5,6 +5,7 @@
 class BaseSolver {
 public:
 
+    Board* board;
     //Method must solve the Board pointed to inplace
     virtual bool solve(Board*) = 0;
     
@@ -12,12 +13,12 @@ public:
     unsigned int counter=0;
 protected:
     //to be overridden with recursive algorithms
-    virtual void recurse(Board*) {};
+    virtual void recurse() {};
     
     //to be overridden with stochastic algorithms
-    virtual void  iterate(Board*) {};
-    virtual int score(Board*) {return 0;};
+    virtual void  iterate() {};
+    virtual int score() {return 0;};
     
     //solves any obvious squares
-    void solveObvious(Board*);
+    void solveObvious();
 };

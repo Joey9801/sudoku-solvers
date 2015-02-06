@@ -4,14 +4,14 @@ bool Backtrack::solve(Board* board){
 //    std::cout << std::endl
 //              << "Solving with the backtrack algorithm" << std::endl;
 
-    solveObvious(board);
+    solveObvious();
 
-    recurse(board);
+    recurse();
 
     return true;
 }
 
-void Backtrack::recurse(Board* board){
+void Backtrack::recurse(){
     counter++;
 
     int loc = board->findLeastCandidates();
@@ -27,7 +27,7 @@ void Backtrack::recurse(Board* board){
         }
 
         if(board->isSquareConsistent(x, y)){
-            recurse(board);
+            recurse();
 
             if(board->isSolved()){
                 return;

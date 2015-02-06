@@ -20,18 +20,18 @@ public:
     int iteration;
     int finalScore;
 
-    int   score(Board*);
+    int   score();
 
-    void  fillRandom(Board*);
-    void  swapRandom(Board*);
-    void  undoSwap(Board*);
+    void  fillRandom();
+    void  swapRandom();
+    void  undoSwap();
 
     //Defines the cooling schedule
-    float getTemperature(int);
+    float getTemperature();
 
     //Returns true if the swap is to be kept
     //Definges the acceptance probability function
-    bool shouldWeAccept(int oldScore, int newScore, unsigned int iteration);
+    bool shouldWeAccept(int oldScore, int newScore);
 private:
     int _lastSwapY;
     int _lastSwapX1;

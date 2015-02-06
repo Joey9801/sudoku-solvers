@@ -47,6 +47,7 @@ int main(int argc, char** argv){
         std::cout << "Loaded " << ss.str() << std::endl;
 
         ssSolver.solve(&board);
+
         if(board.isSolved())
             std::cout << "\tSimAnneal ssSolver succeeded: " << ssSolver.iteration << " iterations" << std::endl;
         else
