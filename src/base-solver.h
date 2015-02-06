@@ -16,7 +16,7 @@ protected:
     
     //to be overridden with stochastic algorithms
     virtual void  iterate(Board*) {};
-    virtual float score(Board*) {return 0;};
+    virtual int score(Board*) {return 0;};
     
     //solves any obvious squares
     void solveObvious(Board*);

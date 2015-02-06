@@ -13,18 +13,20 @@ bool SimAnneal::solve(Board* board){
 
     fillRandom(board);
 
+    std::cout << "Board score = " << score(board) << std::endl;
+
+    int curScore = score(board);
     for(int i=0; i<1000; i++){
         swapRandom(board);
-        if(board->elements[0][0].getFixed()){
-            std::cout << "became fixed on i=" << i << std::endl;
-            break;
-        }
-    }
-    if(!board->elements[0][0].getFixed()){
-        std::cout << "Not fixed" << std::endl;
-    }
+        if( score(board) > curScore)
+            undoSwap(board);
+        else
+            curScore = score(board);
 
+        scoreHistory.push_back(curScore);
+    }
     std::cout << "Board score = " << score(board) << std::endl;
+
 
     return true;
 }
@@ -39,7 +41,7 @@ void SimAnneal::swapRandom(Board* board){
     //We keep within the row to ensure on of the three constraints is always solved
 
     int y = rand() % 9;
-    
+
     //Generate vector of non-fixed elements
     //TODO precompute these for dem gainz
     std::vector<int> free;
@@ -53,7 +55,7 @@ void SimAnneal::swapRandom(Board* board){
     int x1, x2;
     x1 = rand() % (free.size());
     x2 = rand() % (free.size()-1);
-    if(x1>=x2)
+    if(x2>=x1)
         x2++;
 
     x1 = free[x1];
@@ -76,15 +78,31 @@ void SimAnneal::swapRandom(Board* board){
     return;
 }
 
+void SimAnneal::undoSwap(Board* board){
+    //We only need to swap the values
+    //Everything on the row already has the same candidates
+    //(Not that we're using those here)
+    int temp;
+
+    temp = board->elements[_lastSwapX1][_lastSwapY].value;
+
+    board->elements[_lastSwapX1][_lastSwapY].value
+        = board->elements[_lastSwapX2][_lastSwapY].value;
+
+    board->elements[_lastSwapX2][_lastSwapY].value = temp;
+
+    return;
+}
+
 void SimAnneal::fillRandom(Board* board){
     //Fills all the non-fixed elements with a random number
     //Each row is guarenteed to have the numbers 1-9, solving one constraint for free
-    
+
     std::vector<int> candidates;
     bool found[9];
 
     for(int y=0; y<9; y++){
-        
+
         candidates.clear();
         for(int i=0; i<9; i++)
             found[i] = false;
@@ -112,14 +130,14 @@ void SimAnneal::fillRandom(Board* board){
 
 }
 
-float SimAnneal::score(Board* board){
+int SimAnneal::score(Board* board){
     //score the board
     //a score of 0 -> board is solved
     //a higher score indicates 'less solved' than a lower
     //
     //Each unique value in a column/subsquare is worth -1
     //Minimum is therefor -9x9x2=162 -> set initial score to 162
-    float score = 162;
+    int score = 162;
 
     int found[9];
 
@@ -130,7 +148,7 @@ float SimAnneal::score(Board* board){
 
         for(int y=0; y<9; y++)
             found[ board->elements[x][y].value - 1]++;
-        
+
         for(int i=0; i<9; i++){
             if(found[i]>0)
                 score--;

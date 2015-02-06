@@ -14,13 +14,15 @@ public:
     SimAnneal(void);
 
     bool solve(Board*);
-    
+
+    std::vector<int> scoreHistory;
 
     void  iterate(Board*);
-    float score(Board*);
+    int   score(Board*);
 
     void  fillRandom(Board*);
     void  swapRandom(Board*);
+    void  undoSwap(Board*);
 private:
     int _lastSwapY;
     int _lastSwapX1;

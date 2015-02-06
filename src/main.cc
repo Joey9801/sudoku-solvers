@@ -1,4 +1,9 @@
 #include <iostream>
+#include <fstream>
+#include <iterator>
+#include <string>
+#include <vector>
+
 #include "sudoku.h"
 #include "backtrack.h"
 #include "sim-anneal.h"
@@ -27,7 +32,12 @@ int main(int argc, char** argv){
     std::cout << "Loaded puzzle: " << std::endl;
     board.printBoard();
 
-    solver.solve(&board);
-    
+   solver.solve(&board);
+
+    //write the score history to the 
+    std::ofstream outLog("./out.log");
+    std::ostream_iterator<int> out_iterator(outLog, "\n");
+    std::copy(solver.scoreHistory.begin(), solver.scoreHistory.end(), out_iterator);
+
     board.printBoard();
 }
