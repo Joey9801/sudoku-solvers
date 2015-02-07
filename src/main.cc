@@ -9,6 +9,8 @@
 #include "backtrack.h"
 #include "sim-anneal.h"
 
+void runAll(void);
+
 std::vector<std::string> puzzles;
 
 int main(int argc, char** argv){
@@ -35,6 +37,28 @@ int main(int argc, char** argv){
     SimAnneal ssSolver;
     Backtrack btSolver;
 
+    std::vector<int> iterations;
+
+    //runAll();
+
+    for(int i=0; i<1000; i++){
+        board.populate(puzzles[2]);
+        ssSolver.solve(&board);
+        if(board.isSolved())
+            iterations.push_back(ssSolver.iteration);
+    }
+    std::ofstream outLog( "perfLog.log", std::ios_base::app );
+    std::ostream_iterator<int> out_iterator(outLog, "\n");
+    std::copy(iterations.begin(), iterations.end(), out_iterator);
+    std::cout << "+1000 entries" << std::endl;
+
+}
+
+void runAll(void){
+    Board board;
+    SimAnneal ssSolver;
+    Backtrack btSolver;
+
     int i=0;
     std::stringstream ss;
     for(auto p : puzzles){
@@ -57,7 +81,7 @@ int main(int argc, char** argv){
 
 
         ss << ".log";
-        //write the score history to the 
+        //write the score history to the log file
         std::ofstream outLog( ss.str(), std::ios_base::out );
         std::ostream_iterator<int> out_iterator(outLog, "\n");
         std::copy(ssSolver.scoreHistory.begin(), ssSolver.scoreHistory.end(), out_iterator);

@@ -18,7 +18,7 @@ bool SimAnneal::solve(Board* inBoard){
     iteration = 0;
     scoreHistory.clear();
 
-    while( iteration < 500000 ){
+    while( iteration < 1000000 ){
         swapRandom();
         newScore = score();
         
