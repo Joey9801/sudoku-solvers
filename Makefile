@@ -2,7 +2,8 @@ CC := g++
 
 SRCDIR := src
 BUILDDIR := build
-TARGET := bin/runner
+BINDIR := bin
+TARGET := $(BINDIR)/runner
  
 SRCEXT := cc
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -12,6 +13,7 @@ LIB := -Llib
 INC := -I include
 
 $(TARGET): $(OBJECTS)
+	@mkdir -p $(BINDIR)
 	@echo " Linking..."
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
